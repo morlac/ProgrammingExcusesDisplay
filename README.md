@@ -15,7 +15,7 @@
 |    13 |        D4 |        10 | NC                 | NC       |
 |    14 |        D5 |        11 | NC                 | NC       |
 |    15 |  SCK - D6 |        12 | D5                 | D13      |
-|    16 | MOSI - D7 |        13 | D7                 | D12      |
+|    16 | MOSI - D7 |        13 | D7                 | D11      |
 |    17 |    BL VCC |    VCC BL |                    |          |
 |    18 |    BL VSS |    VSS BL |                    |          |
 
