@@ -7,6 +7,9 @@
 #include <Arduino.h>
 #include <ArduinoJson.h>          //https://github.com/bblanchon/ArduinoJson
 
+#define touchPin0 D1
+#define touchPin1 D0
+
 #include <time.h>
 time_t current_time_t, last_time_t = 0;
 struct tm *current_time;
@@ -212,6 +215,9 @@ bool refresh_excuse(void) {
  * 
  */
 void setup() {
+  pinMode(touchPin0, INPUT);
+  pinMode(touchPin1, INPUT);
+
   char hostname_string[19 + 7] = {0};
   sprintf(hostname_string, "programmingexcuses-%06x", ESP.getChipId());
 
@@ -458,6 +464,9 @@ void setup() {
   l = wraptext(excuse, 21);
 }
 
+int touchValue0 = LOW;
+int touchValue1 = LOW;
+
 /**
  * 
  */
@@ -468,10 +477,13 @@ void loop() {
 
   ArduinoOTA.handle();
 
+  touchValue0 = digitalRead(touchPin0);
+  touchValue1 = digitalRead(touchPin1);
+
   current_time_t = (time_t) timeClient.getEpochTime();
   current_time = localtime(&current_time_t);
 
-  if (IsDst(current_time->tm_hour, current_time->tm_mday, current_time->tm_mon + 1, current_time->tm_wday)) {
+  if (IsDst(current_time->tm_hour, current_time->tm_mday, current_time->tm_mon, current_time->tm_wday)) {
     timeClient.setTimeOffset(60 * 60 * 2); // CEST
   } else {
     timeClient.setTimeOffset(60 * 60);     // CET
@@ -497,7 +509,16 @@ void loop() {
   }
 
   u8g2.setFont(u8g2_font_6x10_tr);	// choose a suitable font
+
+  if (touchValue0 == HIGH) {
+    u8g2.drawStr(2, 9, "X");
+  }
+
   u8g2.drawStr(9, 8, "ProgrammingExcuses");
+
+  if (touchValue1 == HIGH) {
+    u8g2.drawStr(127 - 8, 9, "X");
+  }
 
   char line[22] = {0};
 
